@@ -51,8 +51,9 @@ class SRGAN():
                                       img_res=(self.hr_height, self.hr_width))
 
         # Calculate output shape of D (PatchGAN)
-        patch = int(self.hr_height / 2**4)
-        self.disc_patch = (patch, patch, 1)
+        patch_h = int(self.hr_height / 2**4)
+        patch_w = int(self.hr_width / 2**4)
+        self.disc_patch = (patch_h, patch_w, 1)
 
         # Number of filters in the first layer of G and D
         self.gf = 64
@@ -223,6 +224,9 @@ class SRGAN():
             elapsed_time = datetime.datetime.now() - start_time
             # Plot the progress
             print ("%d time: %s" % (epoch, elapsed_time))
+            print('d_loss', d_loss)
+            print('g_loss', g_loss)
+            print('--------------------------------------------------------------------')
 
             # If at save interval => save generated image samples
             if epoch % sample_interval == 0:
