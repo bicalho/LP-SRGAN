@@ -2,6 +2,8 @@ import scipy
 from glob import glob
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.misc
+import imageio
 
 class DataLoader():
     def __init__(self, dataset_name, img_res=(128, 128)):
@@ -21,7 +23,7 @@ class DataLoader():
             img = self.imread(img_path)
 
             h, w = self.img_res
-            low_h, low_w = int(h / 4), int(w / 4)
+            low_h, low_w = int(h / 8), int(w / 8)
 
             img_hr = scipy.misc.imresize(img, self.img_res)
             img_lr = scipy.misc.imresize(img, (low_h, low_w))
