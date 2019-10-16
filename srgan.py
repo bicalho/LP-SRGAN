@@ -25,7 +25,7 @@ class SRGAN():
     def __init__(self):
         # Input shape
         self.channels = 3
-        self.lr_height = 15                 # Low resolution height
+        self.lr_height = 16                 # Low resolution height
         self.lr_width = 42                  # Low resolution width
         self.lr_shape = (self.lr_height, self.lr_width, self.channels)
         self.hr_height = self.lr_height*8   # High resolution height
@@ -234,7 +234,7 @@ class SRGAN():
 
     def sample_images(self, epoch):
         os.makedirs('images/%s' % self.dataset_name, exist_ok=True)
-        r, c = 2, 2
+        r, c = 2, 3
 
         imgs_hr, imgs_lr = self.data_loader.load_data(batch_size=2, is_testing=True)
         fake_hr = self.generator.predict(imgs_lr)
@@ -245,11 +245,11 @@ class SRGAN():
         imgs_hr = 0.5 * imgs_hr + 0.5
 
         # Save generated images and the high resolution originals
-        titles = ['Generated', 'Original']
+        titles = ['Low Resolution','Generated', 'Original']
         fig, axs = plt.subplots(r, c)
         cnt = 0
         for row in range(r):
-            for col, image in enumerate([fake_hr, imgs_hr]):
+            for col, image in enumerate([imgs_lr, fake_hr, imgs_hr]):
                 axs[row, col].imshow(image[row])
                 axs[row, col].set_title(titles[col])
                 axs[row, col].axis('off')
