@@ -10,7 +10,7 @@ from keras.layers.advanced_activations import PReLU, LeakyReLU
 from keras.layers.convolutional import UpSampling2D, Conv2D
 from keras.applications import VGG19
 from keras.models import Sequential, Model
-from keras.optimizers import Adam
+from keras.optimizers import Adam, RMSprop
 import datetime
 import matplotlib.pyplot as plt
 import sys
@@ -31,11 +31,15 @@ class SRGAN():
         self.hr_height = self.lr_height*8   # High resolution height
         self.hr_width = self.lr_width*8     # High resolution width
         self.hr_shape = (self.hr_height, self.hr_width, self.channels)
+        self.g_list = []
+        self.d_list = []
+
 
         # Number of residual blocks in the generator
         self.n_residual_blocks = 16
 
         optimizer = Adam(0.0002, 0.5)
+        # optimizer = RMSprop(0.0002)
 
         # We use a pre-trained VGG19 model to extract image features from the high resolution
         # and the generated high resolution images and minimize the mse between them
@@ -223,6 +227,8 @@ class SRGAN():
 
             elapsed_time = datetime.datetime.now() - start_time
             # Plot the progress
+            self.g_list.append(g_loss)
+            self.d_list.append(d_loss)
             print ("%d time: %s" % (epoch, elapsed_time))
             print('d_loss', d_loss)
             print('g_loss', g_loss)
@@ -231,6 +237,8 @@ class SRGAN():
             # If at save interval => save generated image samples
             if epoch % sample_interval == 0:
                 self.sample_images(epoch)
+            if epoch % 250 == 0:
+                self.generator.save('./models/epoch_'+str(epoch)+'_gloss_'+str(g_loss)+'.h5')
 
     def sample_images(self, epoch):
         os.makedirs('images/%s' % self.dataset_name, exist_ok=True)
